@@ -12,6 +12,7 @@ v2.0/tags: [storage engine, internals, platform]
 InfluxDB 2.0 platform
 
 The InfluxDB 2.0 platform includes:
+
 - query engine
 - internal API 
 - storage engine
@@ -19,11 +20,13 @@ The InfluxDB 2.0 platform includes:
 The query engine sends requests through the internal API to the storage engine. 
 
 The storage engine ensures the following three things:
+
 - Data is safely written to disk
 - Queried data is returned complete and correct 
 - Data is accurate (first) and performant (second)
 
 We built a time series storage engine one layer at a time:
+
 - Write endpoint: HTTP POST /write in line protocol
 - Read endpoint: HTTP GET /read line protocol from InfluxDB
 
@@ -88,15 +91,16 @@ func read(request):
 
 Durability: Written data does not disappear when storage engine restarts.
 
-
 Implemented durability with the Write-Ahead Log (WAL)
 
-On the write side,
-WAL is a data structure and algorithm that is super simple and powerful. When a client sends a /write request:
-Append that write request to the end of the WAL file.
-fsync() the data to the file.
-Update the in-memory database.
-Return success to caller.
+On the write side, WAL is a data structure and algorithm that is super simple and powerful.
+
+When a client sends a /write request, the following occurs:
+
+1. Write request is appended to the end of the WAL file.
+2. fsync() the data to the file.
+3. Update the in-memory database.
+4. Return success to caller.
 
 fsync() is a system call, so it has a kernel context switch which costs something. fsync() takes the file and pushes pending writes all the way through any buffers and caches to the actual spindles or chips. fsync() is expensive, but guarantees your data is safe on disk.
 **Important** to batch your points (send in ~2000 points at a time), to fsync() less frequently. 
