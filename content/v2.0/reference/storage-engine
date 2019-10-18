@@ -1,3 +1,14 @@
+---
+title: InfluxDB storage engine
+description: >
+  Concepts related to InfluxDB storage engine.
+weight: 7
+menu:
+  v2_0_ref:
+    name: Storage engine
+v2.0/tags: [storage engine, internals, platform]
+---
+
 InfluxDB 2.0 platform
 
 The InfluxDB 2.0 platform includes:
